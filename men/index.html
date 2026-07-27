@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دعوة عرس شخصية للرجال</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #f9f0e0;
+      --gold: #a67d2b;
+      --gold-light: #b48c3d;
+      --brown: #6c513f;
+      --brown-soft: #846f61;
+      --wine: #5A0F1B;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      direction: rtl;
+      background: var(--cream);
+      color: var(--brown);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    img,
+    video,
+    iframe {
+      display: block;
+      max-width: 100%;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+      text-align: center;
+    }
+
+    section {
+      position: relative;
+      padding: 70px 0;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-title {
+      margin: 0;
+      color: var(--gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 41px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    .decor {
+      pointer-events: none;
+      user-select: none;
+      object-fit: contain;
+      height: auto;
+    }
+
+    .decor-small {
+      width: 105px;
+      margin: 22px auto 0;
+    }
+
+    .decor-medium {
+      width: 145px;
+      margin: 24px auto;
+    }
+
+    .decor-wide {
+      width: 220px;
+      margin: 24px auto;
+    }
+
+    /* =========================================================
+       5) OPENING ENVELOPE OVERLAY
+       ========================================================= */
+    #envelopeOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+      opacity: 1;
+      transition: opacity .32s ease-out;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    #envelopeOverlay.is-leaving {
+      opacity: 0;
+    }
+
+    #envelopeOverlay.is-opening .envelope-image {
+      animation: envelopeOpen .46s cubic-bezier(.22,.8,.32,1) forwards;
+    }
+
+    @keyframes envelopeOpen {
+      0% { transform: scale(1); filter: brightness(1); }
+      55% { transform: scale(1.035); filter: brightness(1.04); }
+      100% { transform: scale(1.075); filter: brightness(1.07); }
+    }
+
+    .envelope-image {
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .tap-prompt {
+      position: absolute;
+      left: 50%;
+      bottom: 22%;
+      transform: translate(-50%, 12px);
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 13px;
+      animation: promptEntrance .45s ease .15s forwards;
+    }
+
+    .tap-chevron {
+      width: 13px;
+      height: 13px;
+      border-right: 2px solid var(--wine);
+      border-bottom: 2px solid var(--wine);
+      transform: rotate(45deg);
+      animation: gentlePulse 1.15s ease-in-out infinite;
+    }
+
+    .tap-label {
+      white-space: nowrap;
+      font-family: "Cinzel", Georgia, serif;
+      font-size: 11px;
+      letter-spacing: .26em;
+      color: var(--wine);
+      font-weight: 700;
+      text-transform: uppercase;
+      animation: tapTextPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes promptEntrance {
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    @keyframes gentlePulse {
+      0%, 100% { opacity: .45; transform: rotate(45deg) translate(0, 0); }
+      50% { opacity: 1; transform: rotate(45deg) translate(3px, 3px); }
+    }
+
+    @keyframes tapTextPulse {
+      0%, 100% { opacity: .48; letter-spacing: .26em; }
+      50% { opacity: 1; letter-spacing: .31em; }
+    }
+
+    /* =========================================================
+       6) OPENING VIDEO SEQUENCE
+       ========================================================= */
+    #introVideoLayer {
+      position: fixed;
+      inset: 0;
+      z-index: 100001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity .28s ease-out;
+    }
+
+    #introVideoLayer.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+    }
+
+    #introVideoLayer.is-fading {
+      opacity: 0;
+    }
+
+    #introVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* =========================================================
+       7) FLOATING AUDIO CONTROL BUTTON
+       ========================================================= */
+    #audioToggle {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 2147483647;
+      width: 60px;
+      height: 60px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--wine);
+      box-shadow: 0 4px 10px rgba(0,0,0,.18);
+      display: grid;
+      place-items: center;
+      padding: 0;
+      cursor: pointer;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+
+    #audioToggle.is-visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #audioToggle svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    #playIcon {
+      display: none;
+    }
+
+    /* =========================================================
+       9) HERO SECTION
+       ========================================================= */
+    .hero {
+      padding-top: 90px;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--gold);
+      font-family: "Cinzel", Georgia, serif;
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: .08em;
+    }
+
+    .wedding-date {
+      margin: 0 0 34px;
+      color: var(--gold);
+      font-family: "Cinzel", Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: .16em;
+    }
+
+    .couple-names {
+      margin: 0;
+      color: var(--gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 76px;
+      font-style: italic;
+      font-weight: 500;
+      line-height: .95;
+    }
+
+    .couple-names .ampersand {
+      display: block;
+      margin: 14px 0;
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .aligned-alef-madda {
+      position: relative;
+      display: inline-block;
+      font-family: inherit !important;
+      font-style: inherit;
+      line-height: 1;
+    }
+
+    .aligned-alef-madda::after {
+      content: "~";
+      position: absolute;
+      top: -.18em;
+      left: 66%;
+      transform: translateX(-50%) scaleX(.82);
+      transform-origin: center;
+      font-family: Georgia, serif;
+      font-size: .52em;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .scroll-label {
+      margin: 42px 0 12px;
+      color: var(--gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 26px;
+    }
+
+    .scroll-chevron {
+      width: 24px;
+      height: 15px;
+      margin: 0 auto 34px;
+      animation: bob 1.4s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    .swans-video {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto 30px;
+      background: transparent;
+    }
+
+    .flower-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .flower-row img {
+      width: 200px;
+      max-width: 42vw;
+      height: auto;
+    }
+
+    .hero-ornament {
+      width: 110px;
+      margin: 28px auto 0;
+    }
+
+    /* =========================================================
+       10) VERSES / PRAYER SECTION
+       ========================================================= */
+    .bismillah {
+      margin: 0 0 28px;
+      color: var(--gold);
+      font-family: "Amiri", Georgia, serif;
+      font-size: 34px;
+      font-weight: 400;
+      direction: rtl;
+    }
+
+    .prayer-lines {
+      margin: 0 auto 30px;
+      color: var(--wine);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 38px;
+      font-style: italic;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .welcome-text {
+      max-width: 430px;
+      margin: 0 auto;
+      color: var(--brown);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    /* =========================================================
+       11) COUNTDOWN SECTION
+       ========================================================= */
+    .countdown-section {
+      overflow: hidden;
+    }
+
+    .countdown {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 4px;
+      margin: 38px auto 0;
+      color: var(--gold-light);
+    }
+
+    .count-block {
+      min-width: 70px;
+      text-align: center;
+    }
+
+    .number-wrap {
+      height: 60px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .count-number,
+    .count-separator {
+      font-family: "Ovo", Georgia, serif;
+      font-size: 46px;
+      line-height: 1;
+      background: linear-gradient(105deg,#B48C3D 0%,#B48C3D 25%,#cda95a 46%,#d8ba72 52%,#cda95a 58%,#B48C3D 75%,#B48C3D 100%);
+      background-size: 300% 100%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4.5s linear infinite;
+    }
+
+    .count-separator {
+      padding-top: 6px;
+    }
+
+    .count-label {
+      margin-top: 4px;
+      font-family: "Ovo", Georgia, serif;
+      font-size: 19px;
+      opacity: .85;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .countdown-finished {
+      margin: 34px auto 0;
+      color: var(--gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 34px;
+      font-style: italic;
+    }
+
+    .countdown-bottom-accent {
+      width: 105px;
+      margin: 30px auto 0;
+    }
+
+    /* =========================================================
+       12) SCHEDULE SECTION
+       Decorative placements use best design judgment because the
+       exact reference-site pixel positions could not be verified.
+       ========================================================= */
+    .schedule-section {
+      overflow: hidden;
+    }
+
+    .schedule-divider {
+      width: 120px;
+      margin: 20px auto 36px;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 4px 0;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 99px;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: rgba(166,125,43,.35);
+    }
+
+    .timeline-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 70px 30px 1fr;
+      align-items: center;
+      min-height: 54px;
+      text-align: right;
+    }
+
+    .timeline-time {
+      min-width: 70px;
+      color: var(--gold);
+      font-size: 26px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .timeline-dot {
+      position: relative;
+      z-index: 1;
+      width: 9px;
+      height: 9px;
+      margin: 0 auto;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px var(--cream);
+    }
+
+    .timeline-event {
+      padding-left: 14px;
+      color: var(--brown);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .schedule-decor {
+      position: absolute;
+      z-index: 0;
+      opacity: .76;
+      max-width: 145px;
+    }
+
+    .schedule-decor.d1 { top: 36px; left: max(8px, calc(50% - 380px)); width: 115px; }
+    .schedule-decor.d2 { top: 50px; right: max(0px, calc(50% - 390px)); width: 120px; }
+    .schedule-decor.d3 { top: 220px; left: max(0px, calc(50% - 400px)); width: 118px; }
+    .schedule-decor.d4 { top: 260px; right: max(4px, calc(50% - 395px)); width: 120px; }
+    .schedule-decor.d5 { bottom: 35px; left: max(14px, calc(50% - 370px)); width: 108px; }
+    .schedule-decor.d6 { bottom: 28px; right: max(10px, calc(50% - 370px)); width: 105px; }
+    .schedule-decor.d7 { top: 122px; left: max(6px, calc(50% - 340px)); width: 76px; }
+    .schedule-decor.d8 { top: 138px; right: max(8px, calc(50% - 342px)); width: 74px; }
+    .schedule-decor.d9 { bottom: 120px; left: max(16px, calc(50% - 348px)); width: 78px; }
+    .schedule-decor.d10 { bottom: 115px; right: max(12px, calc(50% - 345px)); width: 80px; }
+    .schedule-decor.d11 { top: 315px; right: max(20px, calc(50% - 320px)); width: 68px; }
+
+    /* =========================================================
+       13) LOCATION SECTION
+       ========================================================= */
+    .venue {
+      margin: 20px auto 30px;
+      color: var(--brown);
+      font-size: 24px;
+      line-height: 1.35;
+      direction: rtl;
+    }
+
+    .map-frame {
+      position: relative;
+      width: min(360px, 100%);
+      margin: 0 auto;
+      padding: 8px;
+    }
+
+    .map-frame iframe {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 250px;
+      border: 1px solid var(--gold);
+      background: #efe5d5;
+    }
+
+    .map-frame .frame-art {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      pointer-events: none;
+    }
+
+    .map-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      margin-top: 24px;
+      border: 1px solid var(--wine);
+      border-radius: 999px;
+      padding: 12px 24px;
+      background: var(--wine);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .map-button:hover,
+    .map-button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 18px rgba(90,15,27,.22);
+    }
+
+    /* =========================================================
+       14) DRESS CODE SECTION
+       ========================================================= */
+    .body-copy {
+      max-width: 520px;
+      margin: 22px auto 0;
+      color: var(--brown);
+      font-size: 20px;
+      line-height: 1.45;
+    }
+
+    .accent-pair {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .accent-pair img {
+      width: 85px;
+      max-width: 30vw;
+    }
+
+    .dress-accent-wide {
+      width: 130px;
+      margin: 24px auto 0;
+    }
+
+    /* =========================================================
+       15) GIFT PREFERENCE SECTION
+       ========================================================= */
+    .gift-accent-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 26px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .gift-accent-row img {
+      width: 82px;
+      max-width: 28vw;
+    }
+
+    /* =========================================================
+       16) RSVP SECTION
+       ========================================================= */
+    .rsvp-copy {
+      max-width: 470px;
+      margin: 22px auto 26px;
+      color: var(--brown);
+      font-size: 20px;
+      line-height: 1.45;
+    }
+
+    .seal-button {
+      display: inline-block;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      transition: transform .35s ease;
+    }
+
+    .seal-button:hover,
+    .seal-button:focus-visible {
+      transform: scale(1.05);
+    }
+
+    .seal-button img {
+      width: 150px;
+      margin: 0 auto;
+    }
+
+    .click-open {
+      margin: 15px 0 0;
+      color: var(--gold);
+      font-size: 24px;
+      font-style: italic;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483646;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(45,29,21,.55);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.is-open {
+      display: flex;
+    }
+
+    .modal-card {
+      position: relative;
+      direction: rtl;
+      width: min(560px, 100%);
+      max-height: calc(100vh - 36px);
+      overflow-y: auto;
+      padding: 34px 28px 30px;
+      border: 1px solid rgba(166,125,43,.5);
+      background: var(--cream);
+      box-shadow: 0 22px 70px rgba(0,0,0,.25);
+      text-align: left;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 11px;
+      left: 14px;
+      width: 34px;
+      height: 34px;
+      border: 0;
+      background: transparent;
+      color: var(--brown);
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      margin: 0 34px 5px;
+      color: var(--gold);
+      font-size: 37px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .modal-subtitle {
+      margin: 0 0 27px;
+      color: var(--brown-soft);
+      font-family: "Cinzel", Georgia, serif;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .form-group {
+      margin-bottom: 19px;
+    }
+
+    .form-label,
+    .choice-legend {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--brown);
+      font-size: 19px;
+      font-weight: 600;
+    }
+
+    .text-input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid rgba(166,125,43,.55);
+      border-radius: 0;
+      padding: 11px 4px;
+      background: transparent;
+      color: var(--brown);
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-bottom-color: var(--gold);
+    }
+
+    .choice-options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .choice-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--brown);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .choice-option input {
+      accent-color: var(--wine);
+    }
+
+    .children-notice {
+      margin: 4px 0 22px;
+      color: var(--wine);
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .submit-button {
+      width: 100%;
+      margin-top: 8px;
+      border: 1px solid var(--wine);
+      padding: 13px 18px;
+      background: var(--wine);
+      color: #fff;
+      font-family: "Cinzel", Georgia, serif;
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    .submit-button:hover,
+    .submit-button:focus-visible {
+      background: transparent;
+      color: var(--wine);
+    }
+
+    .thank-you {
+      display: none;
+      min-height: 360px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 34px;
+      background:
+        linear-gradient(rgba(249,240,224,.82), rgba(249,240,224,.9)),
+        url("https://static.tildacdn.net/tild6235-3237-4230-b632-326437376662/pexels-vinicius-quar.jpg") center/cover no-repeat;
+      text-align: center;
+    }
+
+    .thank-you.is-visible {
+      display: flex;
+    }
+
+    .thank-you h3 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 44px;
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    /* =========================================================
+       17) FOOTER
+       ========================================================= */
+    footer {
+      padding: 40px 24px 90px;
+      color: var(--brown-soft);
+      font-size: 18px;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .footer-ornament {
+      width: 100px;
+      margin: 0 auto 24px;
+    }
+
+    /* =========================================================
+       18) RESPONSIVE
+       ========================================================= */
+    @media (max-width: 600px) {
+      section {
+        padding: 52px 0;
+      }
+
+      .hero {
+        padding-top: 90px;
+      }
+
+      .couple-names {
+        font-size: 54px;
+      }
+
+      .prayer-lines {
+        font-size: 30px;
+      }
+
+      .section-title {
+        font-size: 32px;
+      }
+
+      .count-number,
+      .count-separator {
+        font-size: 34px;
+      }
+
+      .count-block {
+        min-width: 56px;
+      }
+
+      .count-label {
+        font-size: 15px;
+      }
+
+      .countdown {
+        gap: 0;
+      }
+
+      .flower-row img {
+        max-width: min(200px, 72vw);
+      }
+
+      .timeline::before {
+        left: 89px;
+      }
+
+      .timeline-row {
+        grid-template-columns: 62px 28px 1fr;
+      }
+
+      .timeline-time {
+        min-width: 62px;
+        font-size: 23px;
+      }
+
+      .timeline-event {
+        padding-left: 10px;
+        font-size: 20px;
+      }
+
+      .schedule-decor {
+        max-width: 22vw;
+        opacity: .32;
+      }
+
+      .schedule-decor.d1,
+      .schedule-decor.d3,
+      .schedule-decor.d5,
+      .schedule-decor.d7,
+      .schedule-decor.d9 {
+        left: 2px;
+      }
+
+      .schedule-decor.d2,
+      .schedule-decor.d4,
+      .schedule-decor.d6,
+      .schedule-decor.d8,
+      .schedule-decor.d10,
+      .schedule-decor.d11 {
+        right: 2px;
+      }
+
+      .modal-card {
+        padding: 32px 20px 24px;
+      }
+
+      .modal-title {
+        font-size: 31px;
+      }
+
+      .decor,
+      .schedule-decor,
+      .accent-pair img,
+      .gift-accent-row img {
+        max-width: calc(100vw - 32px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    /* =========================================================
+       ARABIC TYPOGRAPHY REFINEMENT
+       A graceful mix inspired by Diwani / Thuluth aesthetics
+       ========================================================= */
+    body {
+      font-family: "Amiri", Georgia, serif;
+    }
+
+    .eyebrow,
+    .wedding-date,
+    .couple-names,
+    .section-title,
+    .prayer-lines,
+    .tap-label,
+    .click-open,
+    .modal-title,
+    .count-number,
+    .count-separator,
+    .count-label,
+    .countdown-finished {
+      font-family: "Aref Ruqaa", "Amiri", Georgia, serif !important;
+      letter-spacing: 0 !important;
+    }
+
+    .scroll-label,
+    .welcome-text,
+    .venue,
+    .body-copy,
+    .rsvp-copy,
+    .modal-subtitle,
+    .form-label,
+    .choice-legend,
+    .choice-option,
+    .text-input,
+    .children-notice,
+    footer {
+      font-family: "Amiri", Georgia, serif !important;
+      letter-spacing: 0 !important;
+    }
+
+    .couple-names {
+      line-height: 1.15;
+    }
+
+    .eyebrow {
+      font-size: 28px;
+    }
+
+    .wedding-date {
+      font-size: 24px;
+    }
+
+    .section-title {
+      font-size: 44px;
+    }
+
+    .tap-label,
+    .modal-subtitle,
+    .submit-button {
+      text-transform: none !important;
+    }
+
+    .submit-button {
+      font-family: "Aref Ruqaa", "Amiri", Georgia, serif !important;
+      letter-spacing: 0 !important;
+      font-size: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .section-title {
+        font-size: 34px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- =======================================================
+       4) BACKGROUND AUDIO
+       ======================================================= -->
+  <audio id="weiAudio" loop>
+    <source src="https://pub-4dc8201144ca418fb604349c73e8c724.r2.dev/Einaudi_ Divenire (1) (1).mp3" type="audio/mp3">
+  </audio>
+
+  <!-- =======================================================
+       5) OPENING ENVELOPE OVERLAY
+       ======================================================= -->
+  <div id="envelopeOverlay" role="button" tabindex="0" aria-label="فتح دعوة الزفاف">
+    <img class="envelope-image" src="../envelope-ma-full.png" alt="ظرف دعوة الزفاف بحرفي M وA">
+    <div class="tap-prompt" aria-hidden="true">
+      <span class="tap-chevron"></span>
+      <span class="tap-label">اضغطوا لفتح الدعوة</span>
+    </div>
+  </div>
+
+  <!-- Optimized local envelope-opening motion -->
+  <div id="introVideoLayer" aria-hidden="true">
+    <video id="introVideo" muted playsinline preload="auto">
+      <source src="../intro-envelope-ma.mp4?v=2" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- =======================================================
+       7) FLOATING AUDIO CONTROL BUTTON
+       ======================================================= -->
+  <button id="audioToggle" type="button" aria-label="إيقاف الموسيقى مؤقتاً">
+    <svg id="pauseIcon" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+      <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+    </svg>
+    <svg id="playIcon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M8 5.5v13l10-6.5z"></path>
+    </svg>
+  </button>
+
+  <main>
+    <!-- =====================================================
+         9) HERO SECTION
+         ===================================================== -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow reveal">يوم الزفاف</p>
+        <p class="wedding-date reveal">١٤/٠٨/٢٠٢٥</p>
+
+        <h1 class="couple-names reveal">
+          محمد زين حسام القباني
+          <span class="ampersand">و</span>
+          <span class="bride-name">كريمة السيد ياسر فهد</span>
+        </h1>
+
+        <p class="scroll-label reveal">مرّروا إلى الأسفل</p>
+
+        <svg class="scroll-chevron reveal" viewBox="0 0 25 15.86" aria-hidden="true">
+          <path fill="none" stroke="#937100" stroke-width="1" stroke-linecap="round" d="M1.0092 1.008C4.3691 5.4431 9.1402 9.565 12.5 14C16.8007 9.565 19.6901 5.4431 23.9908 1.008"/>
+        </svg>
+
+        <video class="swans-video reveal" autoplay muted loop playsinline>
+          <source src="https://pub-4dc8201144ca418fb604349c73e8c724.r2.dev/Swans2.mov">
+        </video>
+
+        <div class="flower-row reveal">
+          <img class="decor" src="https://static.tildacdn.net/tild6639-3363-4136-a234-356639363561/noroot.png" alt="">
+          <img class="decor" src="https://static.tildacdn.net/tild3764-3461-4436-a562-636534643333/noroot.png" alt="">
+        </div>
+
+        <img class="decor hero-ornament reveal" src="https://static.tildacdn.net/tild3336-3462-4961-a332-613731663665/623915249_2629494717.png" alt="">
+      </div>
+    </section>
+
+    <!-- =====================================================
+         10) VERSES / PRAYER SECTION
+         ===================================================== -->
+    <section>
+      <div class="wrap">
+        <p class="bismillah reveal">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</p>
+
+        <div class="prayer-lines reveal">
+          روحان<br>
+          وقدرٌ واحد<br>
+          وحياةٌ كتبها الله لنا
+        </div>
+
+        <p class="welcome-text reveal">أهلنا وأحبتنا الكرام
+يسرّنا أن تشاركونا أمسيةً عامرةً بالمحبة والبهجة والدعاء والذكريات الجميلة، ونحن نبدأ معًا رحلة العمر.</p>
+
+      </div>
+    </section>
+
+    <!-- =====================================================
+         11) COUNTDOWN SECTION
+         ===================================================== -->
+    <section class="countdown-section">
+      <div class="wrap">
+        <h2 class="section-title reveal">يتبقّى على موعدنا</h2>
+
+        <div id="countdown" class="countdown reveal" aria-live="polite">
+          <div class="count-block">
+            <div class="number-wrap"><span id="days" class="count-number">0</span></div>
+            <div class="count-label">يوم</div>
+          </div>
+          <div class="count-separator">:</div>
+          <div class="count-block">
+            <div class="number-wrap"><span id="hours" class="count-number">00</span></div>
+            <div class="count-label">ساعة</div>
+          </div>
+          <div class="count-separator">:</div>
+          <div class="count-block">
+            <div class="number-wrap"><span id="minutes" class="count-number">00</span></div>
+            <div class="count-label">دقيقة</div>
+          </div>
+          <div class="count-separator">:</div>
+          <div class="count-block">
+            <div class="number-wrap"><span id="seconds" class="count-number">00</span></div>
+            <div class="count-label">ثانية</div>
+          </div>
+        </div>
+
+        <img class="decor countdown-bottom-accent reveal" src="https://static.tildacdn.net/tild3633-3739-4961-b135-306530633566/noroot.png" alt="">
+      </div>
+    </section>
+
+    <!-- =====================================================
+         13) LOCATION SECTION
+         ===================================================== -->
+    <section>
+      <div class="wrap">
+        <h2 class="section-title reveal">مكان الحفل</h2>
+        <p class="venue reveal">صالة الجلاء الفضية</p>
+
+        <div class="map-frame reveal">
+          <iframe
+            src="https://www.google.com/maps?q=G723%2B66G%2C%20Fayez%20Mansour%2C%20Damascus%2C%20Syria&output=embed"
+            title="صالة الجلاء الفضية"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <img class="frame-art decor" src="https://static.tildacdn.net/tild3830-3566-4961-a334-666539356637/Rectangle_270.svg" alt="">
+        </div>
+
+        <a
+          class="map-button reveal"
+          href="https://www.google.com/maps/search/?api=1&query=G723%2B66G%2C%20Fayez%20Mansour%2C%20Damascus%2C%20Syria"
+          target="_blank"
+          rel="noopener noreferrer">
+          فتح الموقع على الخريطة
+        </a>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         15) GIFT PREFERENCE SECTION
+         ===================================================== -->
+    <section>
+      <div class="wrap">
+        <img class="decor decor-small reveal" src="https://static.tildacdn.net/tild3761-6332-4032-a333-316634313766/623915249_2629494717.png" alt="">
+
+        <h2 class="section-title reveal">الهدايا</h2>
+        <p class="body-copy reveal">نرجو بلطف عدم إحضار الهدايا العينية المعلّبة.</p>
+
+        <div class="gift-accent-row reveal">
+          <img class="decor" src="https://static.tildacdn.net/tild3236-6664-4763-b031-323730383531/noroot.png" alt="">
+          <img class="decor" src="https://static.tildacdn.net/tild3135-3265-4230-b538-636339323861/noroot.png" alt="">
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         16) RSVP SECTION
+         ===================================================== -->
+    <section>
+      <div class="wrap">
+        <h2 class="section-title reveal">تأكيد الحضور</h2>
+
+        <p class="rsvp-copy reveal">حتى نتمكّن من الاستعداد لهذا الاحتفال على أكمل وجه، نرجو منكم التكرّم بتأكيد حضوركم.</p>
+
+        <button id="openRsvp" class="seal-button reveal" type="button" aria-haspopup="dialog" aria-controls="rsvpModal">
+          <img src="https://static.tildacdn.net/tild6638-6565-4665-a361-653962303137/wax_seal_1.png" alt="Open RSVP form">
+        </button>
+
+        <p class="click-open reveal">اضغطوا لفتح الدعوة</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- =======================================================
+       17) FOOTER
+       ======================================================= -->
+  <footer>
+    <img class="decor footer-ornament reveal" src="https://static.tildacdn.net/tild3732-6364-4131-b837-353363666335/623915249_2629494717.png" alt="">
+    <div class="reveal">محمد زين حسام القباني وكريمة السيد ياسر فهد</div>
+  </footer>
+
+  <!-- =======================================================
+       RSVP MODAL
+       ======================================================= -->
+  <div id="rsvpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rsvpModalTitle">
+    <div class="modal-card">
+      <button id="closeRsvp" class="modal-close" type="button" aria-label="إغلاق نموذج تأكيد الحضور">&times;</button>
+
+      <div id="rsvpFormView">
+        <h2 id="rsvpModalTitle" class="modal-title">تأكيد الحضور</h2>
+        <p class="modal-subtitle">يرجى تأكيد الحضور قبل ٩ آب</p>
+
+        <form id="rsvpForm" method="post">
+          <div class="form-group">
+            <label class="form-label" for="guestName">الاسم الكامل</label>
+            <input class="text-input" id="guestName" name="name" type="text" required>
+          </div>
+
+          <fieldset class="form-group" style="border:0;padding:0;margin-left:0;margin-right:0;">
+            <legend class="choice-legend">هل ستتمكنون من الحضور؟</legend>
+            <div class="choice-options">
+              <label class="choice-option">
+                <input type="radio" name="attendance" value="أؤكد حضوري بكل سرور" required>
+                <span>أؤكد حضوري بكل سرور</span>
+              </label>
+              <label class="choice-option">
+                <input type="radio" name="attendance" value="أعتذر عن عدم الحضور" required>
+                <span>أعتذر عن عدم الحضور</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-group">
+            <label class="form-label" for="danceSong">أغنية تفضّلون الرقص على أنغامها</label>
+            <input class="text-input" id="danceSong" name="dance_song" type="text">
+          </div>
+
+          <p class="children-notice">يرجى عدم احضار الاطفال</p>
+
+          <button class="submit-button" type="submit">إرسال</button>
+        </form>
+      </div>
+
+      <div id="thankYou" class="thank-you">
+        <h3>نأمل رؤيتكم معنا!</h3>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       INTRO SEQUENCE
+       ========================================================= */
+    (() => {
+      const overlay = document.getElementById("envelopeOverlay");
+      const videoLayer = document.getElementById("introVideoLayer");
+      const introVideo = document.getElementById("introVideo");
+      const audio = document.getElementById("weiAudio");
+      const audioToggle = document.getElementById("audioToggle");
+      const pauseIcon = document.getElementById("pauseIcon");
+      const playIcon = document.getElementById("playIcon");
+
+      let introStarted = false;
+      let introFinished = false;
+
+      const syncAudioIcons = () => {
+        const isPaused = audio.paused;
+        pauseIcon.style.display = isPaused ? "none" : "block";
+        playIcon.style.display = isPaused ? "block" : "none";
+        audioToggle.setAttribute("aria-label", isPaused ? "تشغيل الموسيقى" : "إيقاف الموسيقى مؤقتاً");
+      };
+
+      const revealAudioButton = () => {
+        audioToggle.classList.add("is-visible");
+        syncAudioIcons();
+      };
+
+      const finishIntro = () => {
+        if (introFinished) return;
+        introFinished = true;
+        videoLayer.classList.add("is-fading");
+
+        window.setTimeout(() => {
+          videoLayer.classList.remove("is-visible", "is-fading");
+          videoLayer.style.display = "none";
+          introVideo.pause();
+          revealAudioButton();
+        }, 300);
+      };
+
+      const startIntro = (event) => {
+        if (event) event.preventDefault();
+        if (introStarted) return;
+        introStarted = true;
+
+        videoLayer.style.display = "flex";
+        videoLayer.classList.add("is-visible");
+        videoLayer.setAttribute("aria-hidden", "false");
+
+        introVideo.currentTime = 0;
+        introVideo.play().catch(finishIntro);
+
+        audio.volume = 1;
+        audio.play().catch(() => {
+          syncAudioIcons();
+        });
+
+        overlay.classList.add("is-leaving");
+
+        window.setTimeout(() => {
+          overlay.style.display = "none";
+        }, 330);
+      };
+
+      overlay.addEventListener("click", startIntro);
+      overlay.addEventListener("touchstart", startIntro, { passive: false });
+      overlay.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") startIntro(event);
+      });
+
+      introVideo.addEventListener("ended", finishIntro);
+      introVideo.addEventListener("error", finishIntro);
+
+      audioToggle.addEventListener("click", () => {
+        if (audio.paused) {
+          audio.play().catch(() => {});
+        } else {
+          audio.pause();
+        }
+        syncAudioIcons();
+      });
+
+      audio.addEventListener("play", syncAudioIcons);
+      audio.addEventListener("pause", syncAudioIcons);
+    })();
+
+    /* =========================================================
+       COUNTDOWN
+       Fixed target: August 14, 2025 at 1:20 AM
+       ========================================================= */
+    (() => {
+      const targetDate = new Date(2025, 7, 14, 1, 20, 0);
+      const countdown = document.getElementById("countdown");
+      const daysEl = document.getElementById("days");
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
+
+      const updateCountdown = () => {
+        const difference = targetDate.getTime() - Date.now();
+
+        if (difference <= 0) {
+          countdown.className = "countdown-finished reveal in";
+          countdown.textContent = "نلقاكم في يوم الفرح!";
+          return false;
+        }
+
+        const totalSeconds = Math.floor(difference / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        daysEl.textContent = String(days);
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+
+        return true;
+      };
+
+      updateCountdown();
+      const countdownTimer = window.setInterval(() => {
+        if (!updateCountdown()) window.clearInterval(countdownTimer);
+      }, 1000);
+    })();
+
+    /* =========================================================
+       SCROLL REVEAL
+       ========================================================= */
+    (() => {
+      const revealElements = document.querySelectorAll(".reveal");
+
+      if (!("IntersectionObserver" in window)) {
+        revealElements.forEach((element) => element.classList.add("in"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, currentObserver) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            currentObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+
+      revealElements.forEach((element) => observer.observe(element));
+    })();
+
+    /* =========================================================
+       RSVP FORM
+       Client-side visual submission; backend-ready form structure
+       ========================================================= */
+    (() => {
+      // Filled after deploying the Google Apps Script web app.
+      const RSVP_ENDPOINT = "";
+      const modal = document.getElementById("rsvpModal");
+      const openButton = document.getElementById("openRsvp");
+      const closeButton = document.getElementById("closeRsvp");
+      const form = document.getElementById("rsvpForm");
+      const formView = document.getElementById("rsvpFormView");
+      const thankYou = document.getElementById("thankYou");
+
+      const openModal = () => {
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        window.setTimeout(() => document.getElementById("guestName").focus(), 0);
+      };
+
+      const closeModal = () => {
+        modal.classList.remove("is-open");
+        document.body.style.overflow = "";
+        openButton.focus();
+      };
+
+      openButton.addEventListener("click", openModal);
+      closeButton.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        const submitButton = form.querySelector(".submit-button");
+        const originalLabel = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = "جارٍ الإرسال…";
+
+        try {
+          if (!RSVP_ENDPOINT) throw new Error("RSVP endpoint is not configured");
+
+          const formData = new FormData(form);
+          formData.append("submitted_at", new Date().toISOString());
+
+          await fetch(RSVP_ENDPOINT, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+          });
+
+          formView.style.display = "none";
+          thankYou.classList.add("is-visible");
+        } catch {
+          submitButton.disabled = false;
+          submitButton.textContent = originalLabel;
+          window.alert("تعذّر إرسال الرد حالياً. يرجى المحاولة مرة أخرى لاحقاً.");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
