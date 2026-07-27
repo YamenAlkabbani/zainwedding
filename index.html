@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الدعوة المباركة</title>
+  <title>دعوة عرس شخصية</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 
@@ -763,9 +763,7 @@
       font-weight: 600;
     }
 
-    .text-input,
-    .number-select,
-    .children-details {
+    .text-input {
       width: 100%;
       border: 0;
       border-bottom: 1px solid rgba(166,125,43,.55);
@@ -776,9 +774,7 @@
       outline: none;
     }
 
-    .text-input:focus,
-    .number-select:focus,
-    .children-details:focus {
+    .text-input:focus {
       border-bottom-color: var(--gold);
     }
 
@@ -787,8 +783,7 @@
       gap: 10px;
     }
 
-    .choice-option,
-    .toggle-row {
+    .choice-option {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -797,25 +792,16 @@
       cursor: pointer;
     }
 
-    .choice-option input,
-    .toggle-row input {
+    .choice-option input {
       accent-color: var(--wine);
     }
 
-    .helper-text {
-      margin: 7px 0 0 29px;
-      color: var(--brown-soft);
-      font-size: 16px;
-      font-style: italic;
-    }
-
-    #childrenDetailsWrap {
-      display: none;
-      margin-top: 12px;
-    }
-
-    #childrenDetailsWrap.is-visible {
-      display: block;
+    .children-notice {
+      margin: 4px 0 22px;
+      color: var(--wine);
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
     }
 
     .submit-button {
@@ -1025,11 +1011,8 @@
     .form-label,
     .choice-legend,
     .choice-option,
-    .toggle-row,
-    .helper-text,
     .text-input,
-    .number-select,
-    .children-details,
+    .children-notice,
     footer {
       font-family: "Amiri", Georgia, serif !important;
       letter-spacing: 0 !important;
@@ -1123,7 +1106,7 @@
         <h1 class="couple-names reveal">
           محمد زين حسام القباني
           <span class="ampersand">و</span>
-          الاء ياسر فهد
+          آلاء ياسر فهد
         </h1>
 
         <p class="scroll-label reveal">مرّروا إلى الأسفل</p>
@@ -1266,7 +1249,7 @@
        ======================================================= -->
   <footer>
     <img class="decor footer-ornament reveal" src="https://static.tildacdn.net/tild3732-6364-4131-b837-353363666335/623915249_2629494717.png" alt="">
-    <div class="reveal">محمد زين حسام القباني والاء ياسر فهد</div>
+    <div class="reveal">محمد زين حسام القباني وآلاء ياسر فهد</div>
   </footer>
 
   <!-- =======================================================
@@ -1301,40 +1284,11 @@
           </fieldset>
 
           <div class="form-group">
-            <label class="form-label" for="guestCount">عدد الضيوف الحاضرين</label>
-            <select class="number-select" id="guestCount" name="guest_count" required>
-              <option value="" selected disabled>اختاروا</option>
-              <option value="0">٠</option>
-              <option value="1">١</option>
-              <option value="2">٢</option>
-              <option value="3">٣</option>
-              <option value="4">٤</option>
-              <option value="5">٥</option>
-              <option value="6">٦</option>
-              <option value="7">٧</option>
-              <option value="8">٨</option>
-              <option value="9">٩</option>
-              <option value="10">١٠</option>
-            </select>
-          </div>
-
-          <div class="form-group">
             <label class="form-label" for="danceSong">أغنية تفضّلون الرقص على أنغامها</label>
             <input class="text-input" id="danceSong" name="dance_song" type="text">
           </div>
 
-          <div class="form-group">
-            <label class="toggle-row" for="childrenAttending">
-              <input id="childrenAttending" name="children_attending" type="checkbox">
-              <span>هل سيحضر أطفال؟</span>
-            </label>
-            <p class="helper-text">يرجى ذكر أسماء الأطفال وأعمارهم.</p>
-
-            <div id="childrenDetailsWrap">
-              <label class="form-label" for="childrenDetails">أسماء الأطفال وأعمارهم</label>
-              <input class="children-details" id="childrenDetails" name="children_names_ages" type="text">
-            </div>
-          </div>
+          <p class="children-notice">يرجى عدم احضار الاطفال</p>
 
           <button class="submit-button" type="submit">إرسال</button>
         </form>
@@ -1510,9 +1464,6 @@
       const form = document.getElementById("rsvpForm");
       const formView = document.getElementById("rsvpFormView");
       const thankYou = document.getElementById("thankYou");
-      const childrenToggle = document.getElementById("childrenAttending");
-      const childrenDetailsWrap = document.getElementById("childrenDetailsWrap");
-      const childrenDetails = document.getElementById("childrenDetails");
 
       const openModal = () => {
         modal.classList.add("is-open");
@@ -1535,12 +1486,6 @@
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-      });
-
-      childrenToggle.addEventListener("change", () => {
-        childrenDetailsWrap.classList.toggle("is-visible", childrenToggle.checked);
-        childrenDetails.required = childrenToggle.checked;
-        if (!childrenToggle.checked) childrenDetails.value = "";
       });
 
       form.addEventListener("submit", async (event) => {
