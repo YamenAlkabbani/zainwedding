@@ -308,9 +308,24 @@
     }
 
     .aligned-alef-madda {
+      position: relative;
       display: inline-block;
-      font-family: "Amiri", Georgia, serif !important;
+      font-family: inherit !important;
+      font-style: inherit;
+      line-height: 1;
+    }
+
+    .aligned-alef-madda::after {
+      content: "~";
+      position: absolute;
+      top: -.18em;
+      left: 50%;
+      transform: translateX(-50%) scaleX(.72);
+      transform-origin: center;
+      font-family: Georgia, serif;
+      font-size: .44em;
       font-style: normal;
+      font-weight: 700;
       line-height: 1;
     }
 
@@ -362,6 +377,15 @@
     /* =========================================================
        10) VERSES / PRAYER SECTION
        ========================================================= */
+    .bismillah {
+      margin: 0 0 28px;
+      color: var(--gold);
+      font-family: "Amiri", Georgia, serif;
+      font-size: 34px;
+      font-weight: 400;
+      direction: rtl;
+    }
+
     .prayer-lines {
       margin: 0 auto 30px;
       color: var(--wine);
@@ -1099,7 +1123,7 @@
         <h1 class="couple-names reveal">
           محمد زين حسام القباني
           <span class="ampersand">و</span>
-          <span class="bride-name"><span class="aligned-alef-madda">آ</span>لاء ياسر فهد</span>
+          <span class="bride-name"><span class="aligned-alef-madda" aria-label="آ">ا</span>لاء ياسر فهد</span>
         </h1>
 
         <p class="scroll-label reveal">مرّروا إلى الأسفل</p>
@@ -1126,6 +1150,8 @@
          ===================================================== -->
     <section>
       <div class="wrap">
+        <p class="bismillah reveal">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ</p>
+
         <div class="prayer-lines reveal">
           روحان<br>
           وقدرٌ واحد<br>
