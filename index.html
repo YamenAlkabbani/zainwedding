@@ -1069,7 +1069,7 @@
        4) BACKGROUND AUDIO
        ======================================================= -->
   <audio id="weiAudio" autoplay loop preload="auto">
-    <source src="https://pub-4dc8201144ca418fb604349c73e8c724.r2.dev/Einaudi_ Divenire (1) (1).mp3" type="audio/mp3">
+    <source src="wedding-music.mp3?v=1" type="audio/mpeg">
   </audio>
 
   <!-- =======================================================
@@ -1332,6 +1332,22 @@
         syncAudioIcons();
       };
 
+      const ensureAudioPlaying = () => {
+        audio.muted = false;
+        audio.volume = 1;
+
+        if (!audio.paused) {
+          syncAudioIcons();
+          return Promise.resolve();
+        }
+
+        return audio.play()
+          .then(syncAudioIcons)
+          .catch(() => {
+            syncAudioIcons();
+          });
+      };
+
       const finishIntro = () => {
         if (introFinished) return;
         introFinished = true;
@@ -1347,6 +1363,11 @@
 
       const startIntro = (event) => {
         if (event) event.preventDefault();
+
+        // Keep this as the first media action inside the trusted tap/click.
+        // Mobile Safari and Chrome may reject play() after the gesture ends.
+        ensureAudioPlaying();
+
         if (introStarted) return;
         introStarted = true;
 
@@ -1357,11 +1378,6 @@
         introVideo.currentTime = 0;
         introVideo.play().catch(finishIntro);
 
-        audio.volume = 1;
-        audio.play().catch(() => {
-          syncAudioIcons();
-        });
-
         overlay.classList.add("is-leaving");
 
         window.setTimeout(() => {
@@ -1370,9 +1386,17 @@
       };
 
       overlay.addEventListener("click", startIntro);
-      overlay.addEventListener("touchstart", startIntro, { passive: false });
       overlay.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") startIntro(event);
+      });
+
+      // If a phone delays loading the MP3 and rejects the first attempt,
+      // retry automatically on the next valid user interaction.
+      document.addEventListener("touchend", () => {
+        if (introStarted && audio.paused) ensureAudioPlaying();
+      }, { passive: true });
+      document.addEventListener("click", () => {
+        if (introStarted && audio.paused) ensureAudioPlaying();
       });
 
       introVideo.addEventListener("ended", finishIntro);
@@ -1380,7 +1404,7 @@
 
       audioToggle.addEventListener("click", () => {
         if (audio.paused) {
-          audio.play().catch(() => {});
+          ensureAudioPlaying();
         } else {
           audio.pause();
         }
@@ -1393,10 +1417,7 @@
       // Start immediately where browser autoplay rules permit it.
       // If a phone blocks unprompted sound, the envelope tap above
       // starts the music with the opening motion—no separate play action.
-      audio.volume = 1;
-      audio.play().catch(() => {
-        syncAudioIcons();
-      });
+      ensureAudioPlaying();
     })();
 
     /* =========================================================
