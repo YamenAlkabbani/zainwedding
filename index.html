@@ -399,12 +399,22 @@
       overflow: hidden;
     }
 
+    .countdown-start-time {
+      margin: 14px auto 0;
+      color: var(--wine);
+      font-family: "Amiri", Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.4;
+      direction: rtl;
+    }
+
     .countdown {
       display: flex;
       align-items: flex-start;
       justify-content: center;
       gap: 4px;
-      margin: 38px auto 0;
+      margin: 24px auto 0;
       color: var(--gold-light);
     }
 
@@ -1058,7 +1068,7 @@
   <!-- =======================================================
        4) BACKGROUND AUDIO
        ======================================================= -->
-  <audio id="weiAudio" loop>
+  <audio id="weiAudio" autoplay loop preload="auto">
     <source src="https://pub-4dc8201144ca418fb604349c73e8c724.r2.dev/Einaudi_ Divenire (1) (1).mp3" type="audio/mp3">
   </audio>
 
@@ -1099,7 +1109,7 @@
          ===================================================== -->
     <section class="hero">
       <div class="wrap">
-        <p class="eyebrow reveal">يوم الزفاف</p>
+        <p class="eyebrow reveal">يوم السبت</p>
         <p class="wedding-date reveal">١٥/٠٨/٢٠٢٦</p>
 
         <h1 class="couple-names reveal">
@@ -1147,6 +1157,7 @@
     <section class="countdown-section">
       <div class="wrap">
         <h2 class="section-title reveal">يتبقّى على موعدنا</h2>
+        <p class="countdown-start-time reveal">يبدأ الحفل في الساعة الثامنة مساءً</p>
 
         <div id="countdown" class="countdown reveal" aria-live="polite">
           <div class="count-block">
@@ -1378,14 +1389,22 @@
 
       audio.addEventListener("play", syncAudioIcons);
       audio.addEventListener("pause", syncAudioIcons);
+
+      // Start immediately where browser autoplay rules permit it.
+      // If a phone blocks unprompted sound, the envelope tap above
+      // starts the music with the opening motion—no separate play action.
+      audio.volume = 1;
+      audio.play().catch(() => {
+        syncAudioIcons();
+      });
     })();
 
     /* =========================================================
        COUNTDOWN
-       Fixed target: August 15, 2026 at 1:20 AM
+       Fixed target: August 15, 2026 at 8:00 PM
        ========================================================= */
     (() => {
-      const targetDate = new Date(2026, 7, 15, 1, 20, 0);
+      const targetDate = new Date(2026, 7, 15, 20, 0, 0);
       const countdown = document.getElementById("countdown");
       const daysEl = document.getElementById("days");
       const hoursEl = document.getElementById("hours");
