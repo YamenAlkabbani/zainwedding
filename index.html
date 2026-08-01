@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>دعوة عرس شخصية</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="envelope-ma-full-optimized.jpg?v=1" as="image" type="image/jpeg" fetchpriority="high">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  </noscript>
 
   <style>
     :root {
@@ -203,7 +209,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000;
+      background: var(--cream);
       opacity: 0;
       pointer-events: none;
       visibility: hidden;
@@ -224,6 +230,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      background: var(--cream);
     }
 
     /* =========================================================
@@ -1068,7 +1075,7 @@
   <!-- =======================================================
        4) BACKGROUND AUDIO
        ======================================================= -->
-  <audio id="weiAudio" autoplay loop preload="auto">
+  <audio id="weiAudio" loop preload="metadata">
     <source src="wedding-music.mp3?v=1" type="audio/mpeg">
   </audio>
 
@@ -1076,7 +1083,7 @@
        5) OPENING ENVELOPE OVERLAY
        ======================================================= -->
   <div id="envelopeOverlay" role="button" tabindex="0" aria-label="فتح دعوة الزفاف">
-    <img class="envelope-image" src="envelope-ma-full.png" alt="ظرف دعوة الزفاف بحرفي M وA">
+    <img class="envelope-image" src="envelope-ma-full-optimized.jpg?v=1" alt="ظرف دعوة الزفاف بحرفي M وA" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='envelope-ma-full.png';">
     <div class="tap-prompt" aria-hidden="true">
       <span class="tap-chevron"></span>
       <span class="tap-label">اضغطوا لفتح الدعوة</span>
@@ -1085,8 +1092,8 @@
 
   <!-- Optimized local envelope-opening motion -->
   <div id="introVideoLayer" aria-hidden="true">
-    <video id="introVideo" muted playsinline preload="auto">
-      <source src="intro-envelope-ma.mp4?v=2" type="video/mp4">
+    <video id="introVideo" muted playsinline preload="auto" poster="envelope-ma-full-optimized.jpg?v=1">
+      <source src="intro-envelope-ma.mp4?v=3" type="video/mp4">
     </video>
   </div>
 
@@ -1319,6 +1326,8 @@
 
       let introStarted = false;
       let introFinished = false;
+      let envelopeDismissed = false;
+      let introFallbackTimer = 0;
 
       const syncAudioIcons = () => {
         const isPaused = audio.paused;
@@ -1348,9 +1357,31 @@
           });
       };
 
+      const dismissEnvelope = () => {
+        if (envelopeDismissed) return;
+        envelopeDismissed = true;
+        overlay.classList.add("is-leaving");
+
+        window.setTimeout(() => {
+          overlay.style.display = "none";
+        }, 330);
+      };
+
+      const revealIntroVideo = () => {
+        if (!introStarted || introFinished) return;
+        window.clearTimeout(introFallbackTimer);
+
+        videoLayer.style.display = "flex";
+        videoLayer.classList.add("is-visible");
+        videoLayer.setAttribute("aria-hidden", "false");
+        window.requestAnimationFrame(dismissEnvelope);
+      };
+
       const finishIntro = () => {
         if (introFinished) return;
         introFinished = true;
+        window.clearTimeout(introFallbackTimer);
+        dismissEnvelope();
         videoLayer.classList.add("is-fading");
 
         window.setTimeout(() => {
@@ -1371,18 +1402,18 @@
         if (introStarted) return;
         introStarted = true;
 
-        videoLayer.style.display = "flex";
-        videoLayer.classList.add("is-visible");
-        videoLayer.setAttribute("aria-hidden", "false");
+        overlay.classList.add("is-opening");
+
+        // Never leave guests waiting on a blank transition if their
+        // connection or browser cannot prepare the intro video quickly.
+        introFallbackTimer = window.setTimeout(finishIntro, 1800);
 
         introVideo.currentTime = 0;
         introVideo.play().catch(finishIntro);
 
-        overlay.classList.add("is-leaving");
-
-        window.setTimeout(() => {
-          overlay.style.display = "none";
-        }, 330);
+        if (introVideo.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          revealIntroVideo();
+        }
       };
 
       overlay.addEventListener("click", startIntro);
@@ -1399,6 +1430,8 @@
         if (introStarted && audio.paused) ensureAudioPlaying();
       });
 
+      introVideo.addEventListener("loadeddata", revealIntroVideo);
+      introVideo.addEventListener("playing", revealIntroVideo);
       introVideo.addEventListener("ended", finishIntro);
       introVideo.addEventListener("error", finishIntro);
 
@@ -1414,10 +1447,7 @@
       audio.addEventListener("play", syncAudioIcons);
       audio.addEventListener("pause", syncAudioIcons);
 
-      // Start immediately where browser autoplay rules permit it.
-      // If a phone blocks unprompted sound, the envelope tap above
-      // starts the music with the opening motion—no separate play action.
-      ensureAudioPlaying();
+      syncAudioIcons();
     })();
 
     /* =========================================================
